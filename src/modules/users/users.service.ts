@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { hash } from 'bcryptjs';
-import { ShortnerRepository } from 'src/repository/shortnerRepository';
 import { User } from '../../entity/User';
+import { ShortnerRepository } from '../../repository/shortnerRepository';
 
 // This should be a real class/interface representing a user entity
 

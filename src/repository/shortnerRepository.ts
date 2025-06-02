@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { User } from 'src/entity/User';
+import { User } from '../entity/User';
 
 export const prismaClient = new PrismaClient({
   // log: ['query'],

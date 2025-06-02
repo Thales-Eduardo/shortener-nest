@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ShortnerRepository } from 'src/repository/shortnerRepository';
+import { ShortnerRepository } from '../../repository/shortnerRepository';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcryptjs';
 import { UsersService } from '../users/users.service';
@@ -16,11 +16,11 @@ export class AuthService {
   ): Promise<{ access_token: string }> {
     const user = await this.usersService.findOneAuth(email);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new BadRequestException('E-mail ou senha está errado.');
     }
 
     const hash = await compare(password, user.password);
-    if (!hash) throw new UnauthorizedException('E-mail ou senha esta errado.');
+    if (!hash) throw new BadRequestException('E-mail ou senha está errado.');
 
     const payload = {
       sub: user.userId,
