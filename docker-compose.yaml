@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  postgres_bd:
+    image: postgres
+    container_name: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=user-shortener
+      - POSTGRES_PASSWORD=shortener
+      - POSTGRES_DB=shortener
+    volumes:
+      - ./pgdata:/.docker/data/postgres

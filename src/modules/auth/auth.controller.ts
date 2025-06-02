@@ -19,12 +19,9 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
-  @Post('login')
+  @Post('/login')
   async signIn(@Body() signInDto: Record<string, any>): Promise<any> {
-    return await this.authService.signIn(
-      signInDto.username,
-      signInDto.password,
-    );
+    return await this.authService.signIn(signInDto.email, signInDto.password);
   }
 
   @UseGuards(AuthGuard)

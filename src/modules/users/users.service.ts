@@ -1,26 +1,42 @@
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import { Injectable } from '@nestjs/common';
+import { hash } from 'bcryptjs';
+import { ShortnerRepository } from 'src/repository/shortnerRepository';
+import { User } from '../../entity/User';
 
 // This should be a real class/interface representing a user entity
-export type User = any;
+
+interface CreateUserDtos {
+  username: string;
+  email: string;
+  password: string;
+}
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
+  private readonly shortnerRepository: ShortnerRepository;
 
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.username === username);
+  constructor(database: ShortnerRepository) {
+    this.shortnerRepository = database;
+  }
+
+  async create(user: CreateUserDtos): Promise<void> {
+    const userExists = await this.shortnerRepository.findByEmail(user.email);
+    if (userExists) {
+      throw new Error('Email already exists');
+    }
+    //encriptar a senha
+    const password = await hash(user.password, 8);
+    user.password = password;
+
+    // salvar o usuário no banco de dados
+    await this.shortnerRepository.createUser({
+      username: user.username,
+      email: user.email,
+      password: user.password,
+    });
+  }
+
+  async findOneAuth(email: string): Promise<User | null> {
+    return await this.shortnerRepository.findByEmail(email);
   }
 }

@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { compare } from 'bcryptjs';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
@@ -12,14 +11,22 @@ export class AuthService {
   ) {}
 
   async signIn(
-    username: string,
-    pass: string,
+    email: string,
+    password: string,
   ): Promise<{ access_token: string }> {
-    const user = await this.usersService.findOne(username);
-    if (user?.password !== pass) {
+    const user = await this.usersService.findOneAuth(email);
+    if (!user) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: user.userId, username: user.username };
+
+    const hash = await compare(password, user.password);
+    if (!hash) throw new UnauthorizedException('E-mail ou senha esta errado.');
+
+    const payload = {
+      sub: user.userId,
+      username: user.username,
+      email: user.email,
+    };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
