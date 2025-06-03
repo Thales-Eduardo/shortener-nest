@@ -1,5 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -14,5 +22,11 @@ export class UsersController {
       email: signInDto.email,
       password: signInDto.password,
     });
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Delete('delete/:user_id')
+  async delete(@Param('user_id') user_id: string): Promise<void> {
+    await this.usersService.delete(user_id);
   }
 }

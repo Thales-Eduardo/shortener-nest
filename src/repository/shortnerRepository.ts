@@ -38,4 +38,25 @@ export class ShortnerRepository {
       },
     });
   }
+
+  async delete(userId: string): Promise<void> {
+    await prismaClient.user.delete({
+      where: { id: userId },
+    });
+  }
+
+  async findById(userId: string): Promise<User | null> {
+    const user = await prismaClient.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      return null;
+    }
+    return new User({
+      userId: user.id,
+      username: user.name,
+      email: user.email,
+      password: user.password,
+    });
+  }
 }

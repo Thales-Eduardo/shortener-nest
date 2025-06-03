@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { hash } from 'bcryptjs';
 import { User } from '../../entity/User';
 import { ShortnerRepository } from '../../repository/shortnerRepository';
@@ -38,5 +38,13 @@ export class UsersService {
 
   async findOneAuth(email: string): Promise<User | null> {
     return await this.shortnerRepository.findByEmail(email);
+  }
+
+  async delete(userId: string): Promise<void> {
+    const user = await this.shortnerRepository.findById(userId);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    await this.shortnerRepository.delete(userId);
   }
 }
