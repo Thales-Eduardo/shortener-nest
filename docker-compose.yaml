@@ -12,4 +12,4 @@ services:
       - POSTGRES_PASSWORD=shortener
       - POSTGRES_DB=shortener
     volumes:
-      - ./pgdata:/.docker/data/postgres
+      - ./.docker/pgdata:/data/postgres
