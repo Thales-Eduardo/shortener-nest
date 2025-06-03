@@ -24,3 +24,21 @@ model User {
 
   @@map("users")
 }
+
+model HASHUSER {
+  hash         String   @id @db.VarChar(6)
+  user_id      String?  @db.VarChar(36)
+  url_original String?  @db.VarChar(255)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now()) @updatedAt
+
+  @@map("hash_user")
+}
+
+model HASHES {
+  hash       String   @id @db.VarChar(6)
+  available  Boolean
+  created_at DateTime @default(now())
+
+  @@map("hashes")
+}

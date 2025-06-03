@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { prismaClient } from 'src/database';
 import { User } from '../entity/User';
-
-export const prismaClient = new PrismaClient({
-  // log: ['query'],
-});
 
 interface CreateUserDtos {
   username: string;
