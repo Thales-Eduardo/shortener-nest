@@ -26,8 +26,8 @@
 
 ## Estratégia de Geração e Uso de Hashes
 
-- Geramos com antecedência um número X de hash, assim controlamos a disponibilidade das hashes, evitando um loop grande para saber se a hash já foi usada ou não.
-- Na tabela de hash iremos pegar a primeira hash disponível, retornar o valor e salvar na tabela de hashuser
+- Geramos com antecedência um número X de hash, assim controlamos a disponibilidade das hashes, evitando um loop grande para saber se a hash já foi usada ou não, ja que temos um limite de 6^64, pois as hashes seram geradas atraves do base64.
+- Na tabela de hash, iremos pegar a primeira hash disponível, retornar o valor e salvar na tabela de hash user.
 
 ## Trafego Estimado
 
@@ -58,4 +58,8 @@
   - `HASHUSER`
     - custo estimado por registro na tabela `HASHUSER` = 684 byte = 0,000652 MB
     - 10 url por minuto x 60 minutos x 24 horas x 365 dias = 5.256.000 url
-    - o total de armazenamento necessário em um ano seria = 5.256.000 url x 0,000652 MB = 3,35GB
+    - o total de armazenamento necessário estimado em um ano seria = 5.256.000 url x 0,000652 MB = 3,35GB
+
+## Melhorias
+
+.env populate

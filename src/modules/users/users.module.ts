@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ShortnerRepository } from '../../repository/shortnerRepository';
+import { UserRepository } from '../../repository/userRepository';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
 @Module({
-  providers: [UsersService, ShortnerRepository],
+  providers: [UsersService, UserRepository],
   exports: [UsersService],
   controllers: [UsersController],
 })

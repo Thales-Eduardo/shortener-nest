@@ -1,58 +1,46 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
-import { prismaClient } from 'src/database';
-import { User } from '../entity/User';
-
-interface CreateUserDtos {
-  username: string;
-  email: string;
-  password: string;
-}
+import { prismaClient } from '../database';
 
 @Injectable()
 export class ShortnerRepository {
-  async findByEmail(email: string): Promise<User | null> {
-    const user = await prismaClient.user.findFirst({
-      where: { email },
-    });
-    if (!user) {
-      return null;
+  async createHash(
+    hash: string,
+    available: boolean,
+    limit_hash: number,
+  ): Promise<boolean> {
+    try {
+      return await prismaClient.$transaction(async (tx: any) => {
+        const hashCount = await tx.hASHES.count();
+        if (hashCount >= limit_hash) {
+          return false;
+        }
+
+        const existingHash = await tx.hASHES.findUnique({
+          where: { hash },
+        });
+
+        if (existingHash) {
+          console.log('Hash já existe');
+          return false;
+        }
+
+        await tx.hASHES.create({
+          data: {
+            hash,
+            available,
+            created_at: new Date(),
+          },
+        });
+
+        console.log('Hash inserida com sucesso');
+        return true;
+      });
+    } catch (err) {
+      console.error('Erro durante a operação:', err);
+      return false;
     }
-    return new User({
-      userId: user.id,
-      username: user.name,
-      email: user.email,
-      password: user.password,
-    });
-  }
-
-  async createUser(user: CreateUserDtos): Promise<void> {
-    await prismaClient.user.create({
-      data: {
-        name: user.username,
-        email: user.email,
-        password: user.password,
-      },
-    });
-  }
-
-  async delete(userId: string): Promise<void> {
-    await prismaClient.user.delete({
-      where: { id: userId },
-    });
-  }
-
-  async findById(userId: string): Promise<User | null> {
-    const user = await prismaClient.user.findUnique({
-      where: { id: userId },
-    });
-    if (!user) {
-      return null;
-    }
-    return new User({
-      userId: user.id,
-      username: user.name,
-      email: user.email,
-      password: user.password,
-    });
   }
 }
