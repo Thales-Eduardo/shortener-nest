@@ -26,7 +26,7 @@
 
 ## Estratégia de Geração e Uso de Hashes
 
-- Geramos com antecedência um número X de hash, assim controlamos a disponibilidade das hashes, evitando um loop grande para saber se a hash já foi usada ou não, ja que temos um limite de 6^64, pois as hashes seram geradas atraves do base64.
+- Geramos com antecedência um número X de hash, assim controlamos a disponibilidade das hashes, evitando um loop grande para saber se a hash já foi usada ou não, ja que temos um limite de 6^64, pois as hashes seram geradas te 64 caracters.
 - Na tabela de hash, iremos pegar a primeira hash disponível, retornar o valor e salvar na tabela de hash user.
 
 ## Trafego Estimado
@@ -65,13 +65,11 @@ recalcular
 ## Melhorias
 
 .env populate
-melhorar test e2e
-throw new BadRequestException('Nenhuma hash disponível.');
+arrumar o redirect com hash 234/r
+recalcular armazenamento estimado
 
 - política de limpeza da tabela de HASHUSER das urls, available: false.
 
 ## Obs
 
 sobre os teste unitários
-typagem
-validar dos dados

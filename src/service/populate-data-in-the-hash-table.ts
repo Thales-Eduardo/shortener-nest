@@ -23,12 +23,12 @@ let hash = '';
 const controller = new AbortController();
 
 function generateRandomHash(): string {
-  const base64 =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  const chars =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-'; // 64 caracter
 
   const randomBytes = uuid(HASH_SIZE);
   for (let i = 0; i < HASH_SIZE; i++) {
-    hash += base64.charAt(randomBytes[i] % base64.length);
+    hash += chars.charAt(randomBytes[i] % chars.length);
   }
 
   return hash;
