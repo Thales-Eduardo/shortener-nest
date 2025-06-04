@@ -63,3 +63,5 @@
 ## Melhorias
 
 .env populate
+
+throw new BadRequestException('Nenhuma hash disponível.');
