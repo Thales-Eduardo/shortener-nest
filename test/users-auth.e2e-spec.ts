@@ -6,11 +6,12 @@ import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/modules/app.module';
 
-describe('AppController (e2e)', () => {
+describe('UserController & AuthController(e2e)', () => {
   let app: INestApplication<App>;
   let userId: string;
+  let token: string;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -21,6 +22,7 @@ describe('AppController (e2e)', () => {
 
   afterAll(async () => {
     await request(app.getHttpServer()).delete(`/users/delete/${userId}`);
+    await app.close();
   });
 
   it('POST /auth/login & users/register', async () => {
@@ -43,6 +45,7 @@ describe('AppController (e2e)', () => {
 
     expect(response.body).toHaveProperty('access_token');
     expect(typeof response.body.access_token).toBe('string');
+    token = response.body.access_token;
   });
 
   it('POST /auth/login → 401 se credenciais inválidas', () => {
@@ -57,15 +60,6 @@ describe('AppController (e2e)', () => {
   });
 
   it('GET /auth/profile → 200 & retorna o usuário correto quando enviar token válido', async () => {
-    const loginRes = await request(app.getHttpServer())
-      .post('/auth/login')
-      .send({
-        email: 'test@example.com',
-        password: 'test',
-      })
-      .expect(200);
-
-    const token: string = loginRes.body.access_token;
     expect(token).toBeDefined();
 
     const profileRes = await request(app.getHttpServer())

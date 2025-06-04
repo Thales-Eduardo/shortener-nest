@@ -36,6 +36,8 @@
 
 ## Armazenamento estimado no PostgreSQl
 
+recalcular
+
 - **Tabelas:**
   - `HASHUSER`
     - hash: varchar(6) => PK => index
@@ -65,6 +67,8 @@
 .env populate
 melhorar test e2e
 throw new BadRequestException('Nenhuma hash disponível.');
+
+- política de limpeza da tabela de HASHUSER das urls, available: false.
 
 ## Obs
 

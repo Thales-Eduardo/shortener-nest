@@ -104,19 +104,33 @@ export class ShortnerRepository {
     return { url_original: result.url_original };
   }
 
-  async findAllHashes(user_id: string): Promise<any[]> {
+  async findAllHashes(user_id: string, page: number): Promise<any[]> {
     return await prismaClient.hASHUSER.findMany({
+      skip: (page - 1) * 10,
+      take: 10,
       where: {
         user_id,
         available: true,
       },
       orderBy: {
-        created_at: 'desc', // mais recentes primeiro
+        created_at: 'desc', // os mais recentes primeiro
       },
     });
   }
 
-  async updateUserUrl(hash: string, newUrl: string): Promise<void> {
+  async updateUserUrl(
+    hash: string,
+    newUrl: string,
+    user_id: string,
+  ): Promise<boolean> {
+    const entry = await prismaClient.hASHUSER.findFirst({
+      where: { hash, user_id },
+    });
+
+    if (!entry) {
+      return false;
+    }
+
     await prismaClient.hASHUSER.update({
       where: { hash },
       data: {
@@ -124,11 +138,24 @@ export class ShortnerRepository {
         // @updatedAt att auto
       },
     });
+
+    return true;
   }
 
-  async deleteUserUrl(hash: string): Promise<void> {
+  async deleteUserUrl(
+    hash: string,
+    user_id: string,
+  ): Promise<void | undefined> {
+    const entry = await prismaClient.hASHUSER.findFirst({
+      where: { hash, user_id },
+    });
+
+    if (!entry) {
+      return undefined;
+    }
+
     await prismaClient.hASHUSER.update({
-      where: { hash },
+      where: { hash, user_id },
       data: {
         available: false,
         // `updated_at` att auto defaults/@updatedAt

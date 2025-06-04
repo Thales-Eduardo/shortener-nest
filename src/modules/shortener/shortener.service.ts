@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ShortnerRepository } from '../../repository/shortnerRepository';
 
@@ -20,6 +22,7 @@ export class ShortenerService {
       url_original,
       user_id ?? undefined,
     );
+
     if (!result) {
       throw new BadRequestException('Failed to create user URL');
     }
@@ -37,8 +40,8 @@ export class ShortenerService {
     return { url_original: result.url_original };
   }
 
-  async findAllHashes(user_id: string): Promise<any[]> {
-    const result = await this.shortnerRepository.findAllHashes(user_id);
+  async findAllHashes(user_id: string, page: number): Promise<any[]> {
+    const result = await this.shortnerRepository.findAllHashes(user_id, page);
     if (!result || result.length === 0) {
       throw new BadRequestException('No hashes found for this user');
     }
@@ -46,11 +49,28 @@ export class ShortenerService {
     return result;
   }
 
-  async updateUserUrl(hash: string, newUrl: string): Promise<void> {
-    return this.shortnerRepository.updateUserUrl(hash, newUrl);
+  async updateUserUrl(
+    hash: string,
+    newUrl: string,
+    user_id: string,
+  ): Promise<void> {
+    const result = await this.shortnerRepository.updateUserUrl(
+      hash,
+      newUrl,
+      user_id,
+    );
+    if (!result) {
+      throw new BadRequestException('Failed to update user URL');
+    }
   }
 
-  async deleteUserUrl(hash: string): Promise<void> {
-    return this.shortnerRepository.deleteUserUrl(hash);
+  async deleteUserUrl(
+    hash: string,
+    user_id: string,
+  ): Promise<void | undefined> {
+    const result = this.shortnerRepository.deleteUserUrl(hash, user_id);
+    if (!result) {
+      throw new BadRequestException('Failed to delete user URL');
+    }
   }
 }
