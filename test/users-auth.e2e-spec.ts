@@ -31,7 +31,7 @@ describe('AppController (e2e)', () => {
         email: 'test@example.com',
         password: 'test',
       })
-      .expect(200);
+      .expect(201);
 
     const response = await request(app.getHttpServer())
       .post('/auth/login')

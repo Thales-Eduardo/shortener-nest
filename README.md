@@ -63,5 +63,11 @@
 ## Melhorias
 
 .env populate
-
+melhorar test e2e
 throw new BadRequestException('Nenhuma hash disponível.');
+
+## Obs
+
+sobre os teste unitários
+typagem
+validar dos dados

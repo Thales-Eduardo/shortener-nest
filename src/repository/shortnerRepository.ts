@@ -44,8 +44,8 @@ export class ShortnerRepository {
   }
 
   async createUserUrl(
-    user_id: string,
     url_original: string,
+    user_id?: string,
   ): Promise<string | undefined> {
     return await prismaClient.$transaction(async (tx) => {
       const [selected] = await tx.$queryRaw<Array<{ hash: string }>>(
@@ -74,8 +74,8 @@ export class ShortnerRepository {
       await tx.hASHUSER.create({
         data: {
           hash,
-          available: true,
           user_id: user_id ?? null,
+          available: true,
           url_original,
         },
       });

@@ -28,7 +28,7 @@ model User {
 model HASHUSER {
   hash         String   @id @db.VarChar(6)
   user_id      String?  @db.VarChar(36)
-  available    Boolean
+  available    Boolean  @default(true)
   url_original String?  @db.VarChar(255)
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now()) @updatedAt

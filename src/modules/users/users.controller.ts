@@ -14,7 +14,7 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   @Post('register')
   async signIn(@Body() signInDto: Record<string, any>): Promise<void> {
     await this.usersService.create({
