@@ -27,14 +27,14 @@ describe('UserController & AuthController(e2e)', () => {
       .send({
         username: 'Test User2',
         email: 'test2@example.com',
-        password: 'test',
+        password: 'testexemplo',
       })
       .expect(201);
     const response = await request(app.getHttpServer())
       .post('/auth/login')
       .send({
         email: 'test2@example.com',
-        password: 'test',
+        password: 'testexemplo',
       })
       .expect(200);
     token = response.body.access_token;
@@ -93,9 +93,8 @@ describe('UserController & AuthController(e2e)', () => {
       .send({ newUrl: updatedUrl })
       .expect(204);
 
-    const page = 1;
     const res = await request(app.getHttpServer())
-      .get(`/shortener/all_hashes/${page}`)
+      .get(`/shortener/all_hashes/1`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
 
@@ -115,9 +114,8 @@ describe('UserController & AuthController(e2e)', () => {
 
     hash.push(response.body.url);
 
-    const page = 1;
     const res = await request(app.getHttpServer())
-      .get(`/shortener/all_hashes/${page}`)
+      .get('/shortener/all_hashes/1')
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
 
@@ -131,22 +129,22 @@ describe('UserController & AuthController(e2e)', () => {
     expect(record).toHaveProperty('available', true);
   });
 
-  //   it('POST /shortener/shorten_url → 400 Bad Request when required fields are missing', async () => {
-  //     // await request(app.getHttpServer())
-  //     //   .post('/shortener/shorten_url')
-  //     //   .send({ user_id: userId })
-  //     //   .expect(400);
+  it('POST /shortener/shorten_url → 400 Bad Request when required fields are missing', async () => {
+    await request(app.getHttpServer())
+      .post('/shortener/shorten_url')
+      .send({ user_id: userId })
+      .expect(400);
 
-  //     await request(app.getHttpServer())
-  //       .post('/shortener/shorten_url')
-  //       .send({ user_id: 123, url_original: 'https://valid.com' })
-  //       .expect(400);
+    await request(app.getHttpServer())
+      .post('/shortener/shorten_url')
+      .send({ user_id: 123, url_original: 'https://valid.com' })
+      .expect(400);
 
-  //     // await request(app.getHttpServer())
-  //     //   .post('/shortener/shorten_url')
-  //     //   .send({ user_id: userId, url_original: '' })
-  //     //   .expect(HttpStatus.BAD_REQUEST);
-  //   });
+    await request(app.getHttpServer())
+      .post('/shortener/shorten_url')
+      .send({ user_id: userId, url_original: '' })
+      .expect(400);
+  });
 
   it('PUT /shortener/update_url/:hash → 401 Unauthorized', async () => {
     await request(app.getHttpServer())
@@ -163,27 +161,27 @@ describe('UserController & AuthController(e2e)', () => {
       .expect(400);
   });
 
-  //   it('PUT /shortener/update_url/:hash → 400 Bad Request quando body inválido', async () => {
-  //     const newHashRes = await request(app.getHttpServer())
-  //       .post('/shortener/shorten_url')
-  //       .send({ user_id: userId, url_original: 'https://valid.com' })
-  //       .expect(201);
+  it('PUT /shortener/update_url/:hash → 400 Bad Request quando body inválido', async () => {
+    const newHashRes = await request(app.getHttpServer())
+      .post('/shortener/shorten_url')
+      .send({ user_id: userId, url_original: 'https://valid.com' })
+      .expect(201);
 
-  //     hash.push(newHashRes.body.url);
-  //     const newHash = newHashRes.body.url.split('/')[3];
+    hash.push(newHashRes.body.url);
+    const newHash = newHashRes.body.url.split('/')[3];
 
-  //     await request(app.getHttpServer())
-  //       .put(`/shortener/update_url/${newHash}`)
-  //       .set('Authorization', `Bearer ${token}`)
-  //       .send({})
-  //       .expect(400);
+    await request(app.getHttpServer())
+      .put(`/shortener/update_url/${newHash}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({})
+      .expect(400);
 
-  //     await request(app.getHttpServer())
-  //       .put(`/shortener/update_url/${newHash}`)
-  //       .set('Authorization', `Bearer ${token}`)
-  //       .send({ newUrl: 123 })
-  //       .expect(400);
-  //   });
+    await request(app.getHttpServer())
+      .put(`/shortener/update_url/${newHash}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ newUrl: 123 })
+      .expect(400);
+  });
 
   it('GET /shortener/all_hashes/:page → 401 Unauthorized', async () => {
     await request(app.getHttpServer())
@@ -191,18 +189,18 @@ describe('UserController & AuthController(e2e)', () => {
       .expect(401);
   });
 
-  //   it('GET /shortener/all_hashes/:page → 400 Bad Request not page number', async () => {
-  //     await request(app.getHttpServer())
-  //       .get('/shortener/all_hashes/abc')
-  //       .set('Authorization', `Bearer ${token}`)
-  //       .expect(400);
-  //   });
+  it('GET /shortener/all_hashes/:page → 400 Bad Request not page number', async () => {
+    await request(app.getHttpServer())
+      .get('/shortener/all_hashes/abc')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400);
+  });
 
-  //   it('GET /shortener/all_hashes/:page → array vazio para página além do alcance', async () => {
-  //     const page = 99;
-  //     await request(app.getHttpServer())
-  //       .get(`/shortener/all_hashes/${page}`)
-  //       .set('Authorization', `Bearer ${token}`)
-  //       .expect(400);
-  //   });
+  it('GET /shortener/all_hashes/:page → array vazio para página além do alcance', async () => {
+    const page = 99;
+    await request(app.getHttpServer())
+      .get(`/shortener/all_hashes/${page}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400);
+  });
 });

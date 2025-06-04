@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Body,
   Controller,
@@ -7,7 +6,9 @@ import {
   HttpStatus,
   Param,
   Post,
+  ValidationPipe,
 } from '@nestjs/common';
+import { RegisterDtos } from './dtos/register.dtos';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -16,12 +17,10 @@ export class UsersController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
-  async signIn(@Body() signInDto: Record<string, any>): Promise<void> {
-    await this.usersService.create({
-      username: signInDto.username,
-      email: signInDto.email,
-      password: signInDto.password,
-    });
+  async register(
+    @Body(ValidationPipe) registerDtos: RegisterDtos,
+  ): Promise<void> {
+    await this.usersService.create(registerDtos);
   }
 
   @HttpCode(HttpStatus.OK)

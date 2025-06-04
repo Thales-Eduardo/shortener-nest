@@ -31,7 +31,7 @@ describe('UserController & AuthController(e2e)', () => {
       .send({
         username: 'Test User',
         email: 'test@example.com',
-        password: 'test',
+        password: 'testexemplo',
       })
       .expect(201);
 
@@ -39,7 +39,7 @@ describe('UserController & AuthController(e2e)', () => {
       .post('/auth/login')
       .send({
         email: 'test@example.com',
-        password: 'test',
+        password: 'testexemplo',
       })
       .expect(200);
 

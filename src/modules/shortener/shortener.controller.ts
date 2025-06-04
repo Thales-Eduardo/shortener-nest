@@ -13,8 +13,13 @@ import {
   Put,
   Request,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '../../guards/auth.guard';
+import { CreateShortenedUrl } from './dtos/create-shortened-url.dtos';
+import { DeleteUrlDtos } from './dtos/delete-hash.dtos';
+import { FindAllHashesDtos } from './dtos/find-all-hashes.dtos';
+import { HashParamDto, UpdateUrlDto } from './dtos/update-url.dtos';
 import { ShortenerService } from './shortener.service';
 
 @Controller('shortener')
@@ -23,8 +28,10 @@ export class ShortenerController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post('shorten_url')
-  async createUserUrl(@Body() data: any): Promise<Record<string, string>> {
-    const result = await this.shortenerService.createUserUrl({ ...data });
+  async createUserUrl(
+    @Body(ValidationPipe) data: CreateShortenedUrl,
+  ): Promise<Record<string, string>> {
+    const result = await this.shortenerService.createUserUrl(data);
     return { url: result };
   }
 
@@ -32,10 +39,10 @@ export class ShortenerController {
   @Get('all_hashes/:page')
   async findAllHashes(
     @Request() req: any,
-    @Param('page') page: string,
+    @Param(ValidationPipe) data: FindAllHashesDtos,
   ): Promise<any[]> {
     const user_id = req.user.sub;
-    return this.shortenerService.findAllHashes(user_id, Number(page));
+    return this.shortenerService.findAllHashes(user_id, data.page);
   }
 
   @UseGuards(AuthGuard)
@@ -43,11 +50,15 @@ export class ShortenerController {
   @Put('update_url/:hash')
   async updateUserUrl(
     @Request() req: any,
-    @Param('hash') hash: string,
-    @Body('newUrl') newUrl: string,
+    @Param() data: HashParamDto,
+    @Body(ValidationPipe) newUrlData: UpdateUrlDto,
   ): Promise<void> {
     const user_id = req.user.sub;
-    await this.shortenerService.updateUserUrl(hash, newUrl, user_id);
+    await this.shortenerService.updateUserUrl(
+      data.hash,
+      newUrlData.newUrl,
+      user_id,
+    );
   }
 
   @UseGuards(AuthGuard)
@@ -55,9 +66,9 @@ export class ShortenerController {
   @Delete('delete_url/:hash')
   async deleteUserUrl(
     @Request() req: any,
-    @Param('hash') hash: string,
+    @Param() data: DeleteUrlDtos,
   ): Promise<void> {
     const user_id = req.user.sub;
-    await this.shortenerService.deleteUserUrl(hash, user_id);
+    await this.shortenerService.deleteUserUrl(data.hash, user_id);
   }
 }

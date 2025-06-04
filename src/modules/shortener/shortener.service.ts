@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ShortnerRepository } from '../../repository/shortnerRepository';
+import { CreateShortenedUrl } from './dtos/create-shortened-url.dtos';
 
 @Injectable()
 export class ShortenerService {
@@ -14,10 +15,7 @@ export class ShortenerService {
   async createUserUrl({
     user_id,
     url_original,
-  }: {
-    url_original: string;
-    user_id?: string;
-  }): Promise<string> {
+  }: CreateShortenedUrl): Promise<string> {
     const result = await this.shortnerRepository.createUserUrl(
       url_original,
       user_id ?? undefined,
