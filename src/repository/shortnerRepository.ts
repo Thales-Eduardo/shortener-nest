@@ -74,6 +74,7 @@ export class ShortnerRepository {
       await tx.hASHUSER.create({
         data: {
           hash,
+          available: true,
           user_id: user_id ?? null,
           url_original,
         },
@@ -86,9 +87,14 @@ export class ShortnerRepository {
   async findByHash(
     hash: string,
   ): Promise<{ url_original: string } | undefined> {
-    const result = await prismaClient.hASHUSER.findUnique({
-      where: { hash },
-      select: { url_original: true },
+    const result = await prismaClient.hASHUSER.findFirst({
+      where: {
+        hash,
+        available: true,
+      },
+      select: {
+        url_original: true,
+      },
     });
 
     if (!result || result.url_original === null) {
@@ -98,10 +104,15 @@ export class ShortnerRepository {
     return { url_original: result.url_original };
   }
 
-  async findAllHashes(user_id: string): Promise<any[] | undefined> {
+  async findAllHashes(user_id: string): Promise<any[]> {
     return await prismaClient.hASHUSER.findMany({
-      where: { user_id },
-      orderBy: { created_at: 'desc' }, // Ordena por data de criação
+      where: {
+        user_id,
+        available: true,
+      },
+      orderBy: {
+        created_at: 'desc', // mais recentes primeiro
+      },
     });
   }
 
@@ -116,8 +127,12 @@ export class ShortnerRepository {
   }
 
   async deleteUserUrl(hash: string): Promise<void> {
-    await prismaClient.hASHUSER.delete({
+    await prismaClient.hASHUSER.update({
       where: { hash },
+      data: {
+        available: false,
+        // `updated_at` att auto defaults/@updatedAt
+      },
     });
   }
 }
