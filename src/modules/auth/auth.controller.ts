@@ -13,6 +13,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from './auth.service';
 import { AuthDtos } from './dtos/auth.dtos';
@@ -22,6 +23,7 @@ import { AuthDtos } from './dtos/auth.dtos';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   @Post('/login')
   async signIn(@Body(ValidationPipe) signInDto: AuthDtos): Promise<any> {
