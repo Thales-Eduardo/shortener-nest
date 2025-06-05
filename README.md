@@ -44,6 +44,7 @@
     - available: boolean
     - created_at: TIMESTAMPTZ
     - updated_at: TIMESTAMPTZ
+    - count_access Int
   - `HASHES`
     - hash: varchar(6) => PK => index
     - available: boolean
@@ -52,14 +53,15 @@
   - `varchar()` => 4 byte por caractere
   - `TIMESTAMPTZ DEFAULT NOW()` => 8 byte por registro
   - `Boolean` => 1 byte por registro
+  - `(INT ou integer)` => um inteiro ocupa 4 bytes
 - **Custo estimado de armazenamento por registro:**
   - `HASHES`
     - custo estimado por registro na tabela `Hash` = 33 byte
     - 6.000.000 registros x 33 byte = 198000000 byte = 188.78MB
   - `HASHUSER`
-    - custo estimado por registro na tabela `HASHUSER` = 684 byte = 0,000652 MB
+    - custo estimado por registro na tabela `HASHUSER` = 688 byte = 0.000656 MB
     - 10 url por minuto x 60 minutos x 24 horas x 365 dias = 5.256.000 url
-    - o total de armazenamento necessário estimado em um ano seria = 5.256.000 url x 0,000652 MB = 3,35GB
+    - o total de armazenamento necessário estimado em um ano seria = 5.256.000 url x 0.000656 MB = 3.37 GB
 
 ## Melhorias
 
