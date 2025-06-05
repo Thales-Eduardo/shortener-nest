@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+
 import {
   Body,
   Controller,
@@ -10,9 +10,11 @@ import {
   Post,
   Request,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from './auth.service';
+import { AuthDtos } from './dtos/auth.dtos';
 
 @Controller('auth')
 export class AuthController {
@@ -20,8 +22,8 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('/login')
-  async signIn(@Body() signInDto: Record<string, any>): Promise<any> {
-    return await this.authService.signIn(signInDto.email, signInDto.password);
+  async signIn(@Body(ValidationPipe) signInDto: AuthDtos): Promise<any> {
+    return await this.authService.signIn(signInDto);
   }
 
   @UseGuards(AuthGuard)

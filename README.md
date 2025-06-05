@@ -24,6 +24,47 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Estratégia de Geração e Uso de Hashes
 
-add test
+- Geramos com antecedência um número X de hash, assim controlamos a disponibilidade das hashes, evitando um loop grande para saber se a hash já foi usada ou não, ja que temos um limite de 6^64, pois as hashes seram geradas te 64 caracters.
+- Na tabela de hash, iremos pegar a primeira hash disponível, retornar o valor e salvar na tabela de hash user.
+
+## Trafego Estimado
+
+- 500 RPM
+- 10 novas urls por minutos
+
+## Armazenamento estimado no PostgreSQl
+
+- **Tabelas:**
+  - `HASHUSER`
+    - hash: varchar(6) => PK => index
+    - user_id: uuid = varchar(36)
+    - url_original: varchar(255)
+    - available: boolean
+    - created_at: TIMESTAMPTZ
+    - updated_at: TIMESTAMPTZ
+  - `HASHES`
+    - hash: varchar(6) => PK => index
+    - available: boolean
+    - created_at: TIMESTAMPTZ
+- **Custo estimado por caractere no banco de dados PostgreSQL.**
+  - `varchar()` => 4 byte por caractere
+  - `TIMESTAMPTZ DEFAULT NOW()` => 8 byte por registro
+  - `Boolean` => 1 byte por registro
+- **Custo estimado de armazenamento por registro:**
+  - `HASHES`
+    - custo estimado por registro na tabela `Hash` = 33 byte
+    - 6.000.000 registros x 33 byte = 198000000 byte = 188.78MB
+  - `HASHUSER`
+    - custo estimado por registro na tabela `HASHUSER` = 684 byte = 0,000652 MB
+    - 10 url por minuto x 60 minutos x 24 horas x 365 dias = 5.256.000 url
+    - o total de armazenamento necessário estimado em um ano seria = 5.256.000 url x 0,000652 MB = 3,35GB
+
+## Melhorias
+
+- política de limpeza da tabela de HASHUSER das urls, available: false.
+
+## Obs
+
+sobre os teste unitários

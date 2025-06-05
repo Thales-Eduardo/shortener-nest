@@ -1,35 +1,27 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { hash } from 'bcryptjs';
 import { User } from '../../entity/User';
-import { ShortnerRepository } from '../../repository/shortnerRepository';
-
-// This should be a real class/interface representing a user entity
-
-interface CreateUserDtos {
-  username: string;
-  email: string;
-  password: string;
-}
+import { UserRepository } from '../../repository/userRepository';
+import { RegisterDtos } from './dtos/register.dtos';
 
 @Injectable()
 export class UsersService {
-  private readonly shortnerRepository: ShortnerRepository;
+  private readonly userRepository: UserRepository;
 
-  constructor(database: ShortnerRepository) {
-    this.shortnerRepository = database;
+  constructor(database: UserRepository) {
+    this.userRepository = database;
   }
 
-  async create(user: CreateUserDtos): Promise<void> {
-    const userExists = await this.shortnerRepository.findByEmail(user.email);
+  async create(user: RegisterDtos): Promise<void> {
+    const userExists = await this.userRepository.findByEmail(user.email);
     if (userExists) {
       throw new Error('Email already exists');
     }
-    //encriptar a senha
+
     const password = await hash(user.password, 8);
     user.password = password;
 
-    // salvar o usuário no banco de dados
-    await this.shortnerRepository.createUser({
+    await this.userRepository.createUser({
       username: user.username,
       email: user.email,
       password: user.password,
@@ -37,14 +29,14 @@ export class UsersService {
   }
 
   async findOneAuth(email: string): Promise<User | null> {
-    return await this.shortnerRepository.findByEmail(email);
+    return await this.userRepository.findByEmail(email);
   }
 
   async delete(userId: string): Promise<void> {
-    const user = await this.shortnerRepository.findById(userId);
+    const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new BadRequestException('User not found');
     }
-    await this.shortnerRepository.delete(userId);
+    await this.userRepository.delete(userId);
   }
 }
