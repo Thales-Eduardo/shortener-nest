@@ -5,8 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  // output   = "../generated/prisma"
+  provider      = "prisma-client-js"
+  // output   = "../generated/prisma",
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -29,6 +30,7 @@ model HASHUSER {
   hash         String   @id @db.VarChar(6)
   user_id      String?  @db.VarChar(36)
   available    Boolean  @default(true)
+  count_access Int      @default(0)
   url_original String?  @db.VarChar(255)
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now()) @updatedAt

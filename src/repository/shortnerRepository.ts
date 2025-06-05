@@ -49,7 +49,7 @@ export class ShortnerRepository {
   ): Promise<string | undefined> {
     return await prismaClient.$transaction(async (tx) => {
       const [selected] = await tx.$queryRaw<Array<{ hash: string }>>(
-        Prisma.sql`
+        Prisma.raw(`
             WITH selected_hash AS (
               SELECT hash
               FROM hashes
@@ -62,7 +62,7 @@ export class ShortnerRepository {
             SET available = FALSE
             WHERE hash = (SELECT hash FROM selected_hash)
             RETURNING hash;
-        `,
+        `),
       );
 
       if (!selected) {
@@ -158,6 +158,16 @@ export class ShortnerRepository {
       where: { hash, user_id },
       data: {
         available: false,
+        // `updated_at` att auto defaults/@updatedAt
+      },
+    });
+  }
+
+  async countUserUrls(hash: string): Promise<void> {
+    await prismaClient.hASHUSER.update({
+      where: { hash },
+      data: {
+        count_access: { increment: 1 },
         // `updated_at` att auto defaults/@updatedAt
       },
     });

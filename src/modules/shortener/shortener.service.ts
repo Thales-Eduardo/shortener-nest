@@ -35,6 +35,8 @@ export class ShortenerService {
       throw new BadRequestException('Hash not found');
     }
 
+    await this.shortnerRepository.countUserUrls(hash);
+
     return { url_original: result.url_original };
   }
 
