@@ -40,7 +40,6 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 
-  // 6. Logger profissional
   const logger = new Logger('Bootstrap');
   logger.log(`http://localhost:${process.env.PORT ?? 3000}`);
   logger.log(
