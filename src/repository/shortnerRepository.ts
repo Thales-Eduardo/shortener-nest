@@ -162,4 +162,14 @@ export class ShortnerRepository {
       },
     });
   }
+
+  async countUserUrls(hash: string): Promise<void> {
+    await prismaClient.hASHUSER.update({
+      where: { hash },
+      data: {
+        count_access: { increment: 1 },
+        // `updated_at` att auto defaults/@updatedAt
+      },
+    });
+  }
 }

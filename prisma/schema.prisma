@@ -29,6 +29,7 @@ model HASHUSER {
   hash         String   @id @db.VarChar(6)
   user_id      String?  @db.VarChar(36)
   available    Boolean  @default(true)
+  count_access Int      @default(0)
   url_original String?  @db.VarChar(255)
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now()) @updatedAt

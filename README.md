@@ -63,7 +63,9 @@
 
 ## Melhorias
 
+recalcular
 add count para os link acessados
+add dockerfile
 
 - política de limpeza da tabela de HASHUSER das urls, available: false.
 - adicionar tabela ou redis para registrar os ips para rate limit.
