@@ -14,8 +14,8 @@ console.time();
 
 const shortnerRepository = new ShortnerRepository();
 
-const LIMIT_HASH = 6000000;
-const HASH_SIZE = 6; //limit 6^64
+const LIMIT_HASH: number = Number(process.env.LIMIT_HASH);
+const HASH_SIZE: number = Number(process.env.HASH_SIZE); //limit 6^64
 
 let count = 0;
 let hash = '';

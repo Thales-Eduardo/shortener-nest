@@ -36,23 +36,22 @@
 
 ## Armazenamento estimado no PostgreSQl
 
-recalcular
-
 - **Tabelas:**
   - `HASHUSER`
     - hash: varchar(6) => PK => index
     - user_id: uuid = varchar(36)
     - url_original: varchar(255)
+    - available: boolean
     - created_at: TIMESTAMPTZ
     - updated_at: TIMESTAMPTZ
   - `HASHES`
     - hash: varchar(6) => PK => index
     - available: boolean
     - created_at: TIMESTAMPTZ
-- **Custo por caractere no banco de dados**
+- **Custo estimado por caractere no banco de dados PostgreSQL.**
   - `varchar()` => 4 byte por caractere
   - `TIMESTAMPTZ DEFAULT NOW()` => 8 byte por registro
-  - `boolean` => 1 byte por registro
+  - `Boolean` => 1 byte por registro
 - **Custo estimado de armazenamento por registro:**
   - `HASHES`
     - custo estimado por registro na tabela `Hash` = 33 byte
@@ -63,10 +62,6 @@ recalcular
     - o total de armazenamento necessário estimado em um ano seria = 5.256.000 url x 0,000652 MB = 3,35GB
 
 ## Melhorias
-
-.env populate
-arrumar o redirect com hash 234/r
-recalcular armazenamento estimado
 
 - política de limpeza da tabela de HASHUSER das urls, available: false.
 
