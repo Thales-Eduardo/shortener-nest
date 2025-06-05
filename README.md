@@ -65,8 +65,6 @@
 
 ## Melhorias
 
-recalcular
-add count para os link acessados
 add dockerfile
 
 - política de limpeza da tabela de HASHUSER das urls, available: false.
