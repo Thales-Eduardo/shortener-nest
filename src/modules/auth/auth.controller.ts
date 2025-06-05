@@ -12,10 +12,12 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../guards/auth.guard';
 import { AuthService } from './auth.service';
 import { AuthDtos } from './dtos/auth.dtos';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -26,7 +28,10 @@ export class AuthController {
     return await this.authService.signIn(signInDto);
   }
 
+  //para pegar o id do user logado
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
   @Get('profile')
   async getProfile(@Request() req): Promise<any> {
     return req.user;

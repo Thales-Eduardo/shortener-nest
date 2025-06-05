@@ -15,7 +15,7 @@ export class UsersService {
   async create(user: RegisterDtos): Promise<void> {
     const userExists = await this.userRepository.findByEmail(user.email);
     if (userExists) {
-      throw new Error('Email already exists');
+      throw new BadRequestException('Email already exists');
     }
 
     const password = await hash(user.password, 8);
