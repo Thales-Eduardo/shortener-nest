@@ -15,6 +15,7 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../guards/auth.guard';
 import { CreateShortenedUrl } from './dtos/create-shortened-url.dtos';
 import { DeleteUrlDtos } from './dtos/delete-hash.dtos';
@@ -22,6 +23,7 @@ import { FindAllHashesDtos } from './dtos/find-all-hashes.dtos';
 import { HashParamDto, UpdateUrlDto } from './dtos/update-url.dtos';
 import { ShortenerService } from './shortener.service';
 
+@ApiTags('shortener')
 @Controller('shortener')
 export class ShortenerController {
   constructor(private readonly shortenerService: ShortenerService) {}
@@ -35,6 +37,7 @@ export class ShortenerController {
     return { url: result };
   }
 
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard)
   @Get('all_hashes/:page')
   async findAllHashes(
@@ -45,6 +48,7 @@ export class ShortenerController {
     return this.shortenerService.findAllHashes(user_id, data.page);
   }
 
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Put('update_url/:hash')
@@ -61,6 +65,7 @@ export class ShortenerController {
     );
   }
 
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('delete_url/:hash')
