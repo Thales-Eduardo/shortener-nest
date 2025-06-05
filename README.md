@@ -63,7 +63,10 @@
 
 ## Melhorias
 
+add count para os link acessados
+
 - política de limpeza da tabela de HASHUSER das urls, available: false.
+- adicionar tabela ou redis para registrar os ips para rate limit.
 
 ## Obs
 
