@@ -1,9 +1,28 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as elasticApm from 'elastic-apm-node';
 import helmet from 'helmet';
 import { AppModule } from './modules/app.module';
+
+function apm(available: boolean): void {
+  if (!available) return;
+  elasticApm.start({
+    serviceName: 'shortener-url',
+    apiKey: process.env.API_KEY,
+    serverUrl: process.env.SERVER_URL,
+    logLevel: 'trace',
+    // captureExceptions: true,
+    // captureSpanStackTraces: true,
+    // captureErrorLogStackTraces: 'always',
+    // environment: '<your-environment>',
+  });
+}
+
 async function bootstrap() {
+  //ativar ou desativar o APM
+  apm(Boolean(process.env.APM_AVAILABLE));
+
   const app = await NestFactory.create(AppModule, { cors: true });
 
   //class validator
