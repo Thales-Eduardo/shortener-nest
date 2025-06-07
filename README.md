@@ -24,10 +24,16 @@
 
 ## Description
 
+Encurtador de URLs, para rodar o projeto.
+
+```bash
+docker compose -f 'docker-compose-dev.yaml' up -d --build
+```
+
 ## Estratégia de Geração e Uso de Hashes
 
-- Geramos com antecedência um número X de hash, assim controlamos a disponibilidade das hashes, evitando um loop grande para saber se a hash já foi usada ou não, ja que temos um limite de 6^64, pois as hashes seram geradas te 64 caracters.
-- Na tabela de hash, iremos pegar a primeira hash disponível, retornar o valor e salvar na tabela de hash user.
+- Geramos com antecedência um número X de hashes, assim controlamos a disponibilidade das hashes, evitando um loop grande para saber se a hash já foi usada ou não, já que temos um limite de 6^64, pois as hashes serão geradas de 64 caracteres.
+- Na tabela de hash, iremos pegar a primeira hash disponível, retornar o valor e salvar na tabela de hash do usuário.
 
 ## Trafego Estimado
 
@@ -65,11 +71,34 @@
 
 ## Melhorias
 
-add dockerfile
+- [ ] Política de limpeza da tabela de HASHUSER das URLs, disponível: false.
+- [ ] Implementar rate limit com Redis.
+- [ ] Desenvolver dashboard de estatísticas.
+- [ ] Criar interface web de gerenciamento.
+- [ ] Adicionar expiração automática de URLs.
+- [ ] Implementar testes unitários, um exemplo de implementação = https://github.com/Thales-Eduardo/ddd
 
-- política de limpeza da tabela de HASHUSER das urls, available: false.
-- adicionar tabela ou redis para registrar os ips para rate limit.
+- **Para escalar horizontalmente.**
+  - Kubernetes com EKS, um exemplo de implementação = https://github.com/Thales-Eduardo/terraform-eks
+  - Separação de contextos.
+  - Implementar arquitetura de microserviços.
+  - Usar o Keycloak elimina a necessidade de criar um microserviço para autenticação, dessa forma economizando em licenças caso queira usar um API Gateway como Kong, onde a maioria dos plugins as licenças são pagas. Um exemplo de implementação = https://github.com/Thales-Eduardo/keycloak = um exemplo de implementação de kubernetes com o kong = https://github.com/Thales-Eduardo/kubernetes-kong
+  - Usar bancos em cloud como Aurora para escalar tanto verticalmente como horizontalmente, dessa forma economiza no gerenciamento de infraestrutura.
+  - Implementar uma série de regras de arquitetura para confiabilidade do software, como Circuit Breaking, Health Check, etc.
+  - Um exemplo de Circuit Breaking com Istio.
 
-## Obs
-
-sobre os teste unitários
+```yml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+name: circuit-breaker-servicex
+spec:
+host: servicex-service.default.svc.cluster.local
+trafficPolicy:
+outlierDetection:
+#consecutive5xxErrors: 10
+consecutiveGatewayErrors: 6
+interval: 20s
+baseEjectionTime: 30s
+maxEjectionPercent: 100
+```
