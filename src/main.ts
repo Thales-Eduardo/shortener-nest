@@ -1,12 +1,16 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as dotenv from 'dotenv';
 import * as elasticApm from 'elastic-apm-node';
 import helmet from 'helmet';
 import { AppModule } from './modules/app.module';
 
-function apm(available: boolean): void {
-  if (!available) return;
+dotenv.config({ path: '.env.example', override: true });
+
+function apm(): void {
+  if (process.env.APM_AVAILABLE === 'false') return;
+  console.log(`passei aqui`);
   elasticApm.start({
     serviceName: 'shortener-url',
     apiKey: process.env.API_KEY,
@@ -21,7 +25,7 @@ function apm(available: boolean): void {
 
 async function bootstrap() {
   //ativar ou desativar o APM
-  apm(Boolean(process.env.APM_AVAILABLE));
+  apm();
 
   const app = await NestFactory.create(AppModule, { cors: true });
 
@@ -37,7 +41,7 @@ async function bootstrap() {
   //Swagger http://localhost:3333/swagger/api
   const config = new DocumentBuilder()
     .setTitle('shortener-url')
-    .setDescription('The shortener API description')
+    .setDescription('API description')
     .setVersion('1.0')
     .addTag('shortener')
     .addBearerAuth(

@@ -7,10 +7,10 @@ import { AuthService } from './auth.service';
 
 @Module({
   imports: [
-    UsersModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    UsersModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
