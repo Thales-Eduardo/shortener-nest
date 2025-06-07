@@ -1,5 +1,5 @@
 name: shortener-url-ci
-on: workflow_dispatch
+on: [pull_request]
 
 env:
   DATABASE_URL: postgresql://user-shortener:shortener@localhost:5432/shortener?schema=public
