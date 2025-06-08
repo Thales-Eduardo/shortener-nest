@@ -30,6 +30,8 @@ Encurtador de URLs, para rodar o projeto.
 docker compose -f 'docker-compose-dev.yaml' up -d --build
 ```
 
+Obs: Para pegar o id do usuário `auth/profile`
+
 ## Estratégia de Geração e Uso de Hashes
 
 - Geramos com antecedência um número X de hashes, assim controlamos a disponibilidade das hashes, evitando um loop grande para saber se a hash já foi usada ou não, já que temos um limite de 6^64, pois as hashes serão geradas de 64 caracteres.
