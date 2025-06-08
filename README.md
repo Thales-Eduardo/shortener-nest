@@ -27,6 +27,7 @@
 Encurtador de URLs, para rodar o projeto.
 
 ```bash
+# Crie um arquivo .env e depois rode esse comando no terminal.
 docker compose -f 'docker-compose-dev.yaml' up -d --build
 ```
 
